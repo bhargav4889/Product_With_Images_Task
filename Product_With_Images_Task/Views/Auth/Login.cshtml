@@ -1,0 +1,46 @@
+﻿﻿@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Login Account";
+}
+@model Product_With_Images_Task.Models.Auth_Model;
+
+<div class="card p-4 shadow" style="width: 400px;">
+    <h5 class="card-title text-center">Login</h5>
+    <span style="color:grey;" class="text-center">Welcome, Please Login Our System</span>
+    <hr />
+    @if (TempData["AuthRegisterSuccessMsg"] != null)
+    {
+        <div class="alert alert-success mt-3">
+            @TempData["AuthRegisterSuccessMsg"]
+        </div>
+    }
+    <form asp-action="Login" asp-controller="Auth" method="post">
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Email</label>
+            <input type="email" asp-for="User_Email" class="form-control" placeholder="Enter Email" />
+            <span style="color:red;" asp-validation-for="User_Email"></span>
+        </div>
+
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Password</label>
+            <input type="password" class="form-control" asp-for="User_Password" placeholder="Enter Password" />
+            <span style="color:red;" asp-validation-for="User_Password"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+    <div class="text-center mt-3">
+        <span>Not have an account?</span>
+        <a href="@Url.Action("Register", "Auth")" class="text-primary">Register Now</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ViewBag.FailAuthMsg))
+    {
+            <div class="alert alert-danger mt-3">
+            @ViewBag.FailAuthMsg
+            </div>
+    }
+
+
+
+</div>

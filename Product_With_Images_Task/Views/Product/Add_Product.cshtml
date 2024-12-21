@@ -1,0 +1,73 @@
+﻿@model Product_With_Images_Task.Models.Product_Model
+
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<h2>Add Product</h2>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<form asp-action="Add_Product" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="Product_Name"><span class="text-danger">*</span> Product Name</label>
+        <input type="text" asp-for="Product_Name" class="form-control" />
+        <span asp-validation-for="Product_Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Product_SKU"><span class="text-danger">*</span> Product SKU</label>
+        <input type="text" asp-for="Product_SKU" class="form-control" />
+        <span asp-validation-for="Product_SKU" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Product_Price"><span class="text-danger">*</span> Product Price</label>
+        <input type="number" asp-for="Product_Price" class="form-control" />
+        <span asp-validation-for="Product_Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Product_Image"><span class="text-danger">*</span> Upload Product Image</label>
+        <input type="file" asp-for="Product_Image" class="form-control" accept="image/*" onchange="previewImage(event)" />
+        <span asp-validation-for="Product_Image" class="text-danger"></span>
+
+        <!-- Preview Image -->
+        <div id="imagePreview" style="margin-top: 15px;">
+            <img id="preview" src="#" alt="Image Preview" style="display:none; max-width: 200px; border: 1px solid #ccc;" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="Product_IsActive"><span class="text-danger">*</span> Is Active</label>
+        <input type="checkbox" asp-for="Product_IsActive" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Product</button>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const output = document.getElementById('preview');
+                const imagePreview = document.getElementById('imagePreview');
+                output.src = reader.result;
+                output.style.display = 'block'; // Show the image
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}

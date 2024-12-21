@@ -1,0 +1,51 @@
+﻿@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Register Account";
+}
+
+@model Product_With_Images_Task.Models.User_Model;
+
+<div class="card p-4 shadow" style="width: 400px;">
+    <h5 class="card-title text-center">Register</h5>
+    <span style="color:grey;" class="text-center">Create an Account</span>
+    <hr />
+
+    <form asp-action="Register" asp-controller="Auth" method="post">
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Username</label>
+            <input type="text" asp-for="User_Name" class="form-control" placeholder="Enter Username" />
+            <span style="color:red;" asp-validation-for="User_Name"></span>
+        </div>
+
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Email</label>
+            <input type="email" asp-for="User_Email" class="form-control" placeholder="Enter Email" />
+            <span style="color:red;" asp-validation-for="User_Email"></span>
+        </div>
+
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Phone No</label>
+            <input type="number" maxlength="10" asp-for="User_Phone" class="form-control" placeholder="Enter Phone No" />
+            <span style="color:red;" asp-validation-for="User_Phone"></span>
+        </div>
+
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Password</label>
+            <input type="password" asp-for="User_Password" class="form-control" placeholder="Enter Password" />
+            <span style="color:red;" asp-validation-for="User_Password"></span>
+        </div>
+
+        <div class="mb-3">
+            <label><span style="color:red;">*</span> Confirm Password</label>
+            <input type="password" asp-for="User_Confirm_Password" class="form-control" placeholder="Confirm Password" />
+            <span style="color:red;" asp-validation-for="User_Confirm_Password"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <span>Already have an account?</span>
+        <a href="@Url.Action("Login", "Auth")" class="text-primary">Login</a>
+    </div>
+</div>

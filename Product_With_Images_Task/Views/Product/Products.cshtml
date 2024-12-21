@@ -1,0 +1,55 @@
+﻿@model List<Product_With_Images_Task.Models.Product_Model>
+
+@{
+    ViewData["Title"] = "Product List";
+}
+
+<h2>Products</h2>
+
+<!-- Display Success and Error Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<a asp-action="Add_Product" class="btn btn-success">Add Product</a>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>SKU</th>
+            <th>Price</th>
+            <th>Is Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@product.Product_Image_Path" alt="Product Image" width="100" />
+                </td>
+                <td>@product.Product_Name</td>
+                <td>@product.Product_SKU</td>
+                <td>@product.Product_Price</td>
+                <td>@(product.Product_IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Edit_Product" asp-route-id="@product.Product_ID" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete_Product" asp-route-id="@product.Product_ID" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
