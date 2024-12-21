@@ -16,8 +16,8 @@ namespace Product_With_Images_Task.Models
         public decimal Product_Price { get; set; }
         public bool Product_IsActive { get; set; }
 
-        [Required(ErrorMessage = "Please Upload Image")]
-        public IFormFile Product_Image { get; set; }
+      
+        public IFormFile? Product_Image { get; set; }
 
         public string Product_Image_Path { get; set; }
 

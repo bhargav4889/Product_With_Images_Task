@@ -22,6 +22,12 @@ namespace Product_With_Images_Task.BAL
             return _dalProduct.Update_Product(product);
         }
 
+
+        public string SaveProductImage(IFormFile file, string productName)
+        {
+            return _dalProduct.SaveProductImage(file, productName);
+        }
+
         public bool DeleteProduct(int Product_ID)
         {
             return _dalProduct.Delete_Product(Product_ID);

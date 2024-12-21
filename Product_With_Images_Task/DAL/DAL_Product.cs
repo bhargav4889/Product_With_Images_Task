@@ -48,43 +48,33 @@ namespace Product_With_Images_Task.DAL
             }
         }
 
+        // Update product (with possible image change)
         public bool Update_Product(Product_Model product)
         {
             try
             {
-                string uniqueFileName = string.Empty;
+                // Check if there's a new image to be uploaded, otherwise keep the existing path
+                string imagePath = string.IsNullOrEmpty(product.Product_Image_Path) ? product.Product_Image_Path : SaveProductImage(product.Product_Image, product.Product_Name);
 
-                // Update image if a new one is uploaded
-                if (product.Product_Image != null)
+                using (SqlConnection sqlConnection = new SqlConnection(GetDatabaseConnection(_configuration)))
                 {
-                    uniqueFileName = SaveProductImage(product.Product_Image, product.Product_Name);
+                    sqlConnection.Open();
+                    SqlCommand sqlCommand = sqlConnection.CreateCommand();
+                    sqlCommand.CommandText = "UpdateProduct"; // Stored Procedure to update product
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    sqlCommand.Parameters.AddWithValue("@Product_ID", product.Product_ID);
+                    sqlCommand.Parameters.AddWithValue("@Product_Name", product.Product_Name);
+                    sqlCommand.Parameters.AddWithValue("@Product_SKU", product.Product_SKU);
+                    sqlCommand.Parameters.AddWithValue("@Product_Price", product.Product_Price);
+                    sqlCommand.Parameters.AddWithValue("@Product_Status", product.Product_IsActive);
+                    sqlCommand.Parameters.AddWithValue("@Product_Image_Path", imagePath); // Update image path
+
+                    int isUpdated = sqlCommand.ExecuteNonQuery();
+                    sqlConnection.Close();
+
+                    return isUpdated > 0;
                 }
-
-                SqlConnection sqlConnection = new SqlConnection(GetDatabaseConnection(_configuration));
-
-                sqlConnection.Open();
-
-                SqlCommand sqlCommand = sqlConnection.CreateCommand();
-
-                sqlCommand.CommandText = "UpdateProduct"; // Ensure you create this stored procedure
-                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
-
-                sqlCommand.Parameters.AddWithValue("@Product_ID", product.Product_ID);
-                sqlCommand.Parameters.AddWithValue("@Product_Name", product.Product_Name);
-                sqlCommand.Parameters.AddWithValue("@Product_SKU", product.Product_SKU);
-                sqlCommand.Parameters.AddWithValue("@Product_Price", product.Product_Price);
-                sqlCommand.Parameters.AddWithValue("@Product_Status", product.Product_IsActive);
-
-                if (!string.IsNullOrEmpty(uniqueFileName))
-                {
-                    sqlCommand.Parameters.AddWithValue("@Product_Image_Path", uniqueFileName);
-                }
-
-                int isUpdated = sqlCommand.ExecuteNonQuery();
-
-                sqlConnection.Close();
-
-                return isUpdated > 0;
             }
             catch (Exception ex)
             {
@@ -92,6 +82,7 @@ namespace Product_With_Images_Task.DAL
                 return false;
             }
         }
+
 
         public bool Delete_Product(int Product_ID)
         {
@@ -189,7 +180,8 @@ namespace Product_With_Images_Task.DAL
                     product.Product_SKU = reader["Product_SKU"].ToString();
                     product.Product_Price = Convert.ToDecimal(reader["Product_Price"]);
                     product.Product_IsActive = Convert.ToBoolean(reader["Product_Status"]);
-                    product.Product_Image_Path = reader["Product_Image_Path"].ToString();
+                   
+                    product.Product_Image_Path = reader["Product_Img_Path"].ToString();
                 }
 
                 sqlConnection.Close();
@@ -202,7 +194,7 @@ namespace Product_With_Images_Task.DAL
             return product;
         }
 
-        private string SaveProductImage(IFormFile file, string productName)
+        public string SaveProductImage(IFormFile file, string productName)
         {
             string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/product-img");
             if (!Directory.Exists(uploadPath))
@@ -220,5 +212,6 @@ namespace Product_With_Images_Task.DAL
 
             return $"/uploads/product-img/{uniqueFileName}";
         }
+
     }
 }

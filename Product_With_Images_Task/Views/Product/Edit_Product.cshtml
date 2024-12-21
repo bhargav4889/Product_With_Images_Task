@@ -6,20 +6,6 @@
 
 <h2>Edit Product</h2>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
 <form asp-action="Edit_Product" method="post" enctype="multipart/form-data">
     <input type="hidden" name="Product_ID" asp-for="Product_ID" />
 
@@ -41,27 +27,22 @@
         <span asp-validation-for="Product_Price" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label for="Product_Image"><span class="text-danger">*</span> Upload Product Image</label>
-        <input type="file" asp-for="Product_Image" class="form-control" accept="image/*" onchange="previewImage(event)" />
-        <span asp-validation-for="Product_Image" class="text-danger"></span>
-
-        <!-- Display Old Image if available -->
-        @if (!string.IsNullOrEmpty(Model.Product_Image_Path))
-        {
-            <div>
-                <h5>Current Image:</h5>
-                <img src="@Url.Content(Model.Product_Image_Path)" alt="Current Product Image" style="max-width: 200px; border: 1px solid #ccc;" />
-                <br />
-                <small>(If you select a new image, the current one will be replaced.)</small>
-            </div>
-        }
-
-        <!-- Preview Image if a new one is selected -->
-        <div id="imagePreview" style="margin-top: 15px;">
-            <img id="preview" src="#" alt="Image Preview" style="display:none; max-width: 200px; border: 1px solid #ccc;" />
+    <!-- Show the current image if available -->
+    @if (!string.IsNullOrEmpty(Model.Product_Image_Path))
+    {
+        <div class="form-group">
+            <label for="currentImage">Current Image</label><br />
+            <img src="@Model.Product_Image_Path" alt="Current Product Image" style="max-width: 200px; border: 1px solid #ccc;" />
         </div>
+    }
+
+    <div class="form-group">
+        <label for="Product_Image">Upload New Product Image (if any)</label>
+        <input type="file" name="Product_Image" class="form-control" accept="image/*" />
+        <span asp-validation-for="Product_Image" class="text-danger"></span>
     </div>
+
+    <input type="hidden" name="Product_Image_Path" asp-for="Product_Image_Path" />
 
     <div class="form-group">
         <label for="Product_IsActive">Is Active</label>
@@ -70,18 +51,3 @@
 
     <button type="submit" class="btn btn-primary">Update Product</button>
 </form>
-
-@section Scripts {
-    <script type="text/javascript">
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const output = document.getElementById('preview');
-                const imagePreview = document.getElementById('imagePreview');
-                output.src = reader.result;
-                output.style.display = 'block'; // Show the image preview
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-    </script>
-}

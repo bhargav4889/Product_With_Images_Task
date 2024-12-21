@@ -46,8 +46,8 @@
                 <td>@product.Product_Price</td>
                 <td>@(product.Product_IsActive ? "Yes" : "No")</td>
                 <td>
-                    <a asp-action="Edit_Product" asp-route-id="@product.Product_ID" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete_Product" asp-route-id="@product.Product_ID" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("Edit_Product","Product" , new {Product_ID = product.Product_ID})" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Delete_Product", "Product", new { Product_ID = product.Product_ID })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

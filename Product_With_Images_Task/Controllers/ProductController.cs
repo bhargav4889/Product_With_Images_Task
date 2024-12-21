@@ -22,7 +22,7 @@ namespace Product_With_Images_Task.Controllers
             return View(products);
         }
 
-     
+
         public IActionResult Add_Product()
         {
             return View();
@@ -31,16 +31,16 @@ namespace Product_With_Images_Task.Controllers
         [HttpPost]
         public IActionResult Add_Product(Product_Model product)
         {
-           
-                bool isAdded = _balProduct.AddProduct(product);
-                if (isAdded)
-                {
-                    TempData["SuccessMessage"] = "Product added successfully!";
-                    return RedirectToAction("Products","Product");
-                }
-               
-                
-            
+
+            bool isAdded = _balProduct.AddProduct(product);
+            if (isAdded)
+            {
+                TempData["SuccessMessage"] = "Product added successfully!";
+                return RedirectToAction("Products", "Product");
+            }
+
+
+
             TempData["ErrorMessage"] = "Failed to add product.";
             return View(product);
         }
@@ -59,18 +59,42 @@ namespace Product_With_Images_Task.Controllers
         [HttpPost]
         public IActionResult Edit_Product(Product_Model product)
         {
-            
-                bool isUpdated = _balProduct.UpdateProduct(product);
-                if (isUpdated)
+
+            // If a new image is uploaded, handle it, otherwise retain the old image path
+            if (product.Product_Image != null)
+            {
+                string newImagePath = _balProduct.SaveProductImage(product.Product_Image, product.Product_Name);
+
+                // Optionally, delete the old image from the server
+                if (!string.IsNullOrEmpty(product.Product_Image_Path))
                 {
-                    TempData["SuccessMessage"] = "Product updated successfully!";
-                    return RedirectToAction("Products");
+                    string oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", product.Product_Image_Path.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Set the new image path in the model
+                product.Product_Image_Path = newImagePath;
             }
-                TempData["ErrorMessage"] = "Failed to update product.";
-               
-            
+
+            bool isUpdated = _balProduct.UpdateProduct(product);
+            if (isUpdated)
+            {
+                TempData["SuccessMessage"] = "Product updated successfully!";
+                return RedirectToAction("Products");
+            }
+
+            TempData["ErrorMessage"] = "Failed to update product.";
+
             return View(product);
         }
+
+
+
+
+
 
         public IActionResult Delete_Product(int Product_ID)
         {
@@ -87,3 +111,5 @@ namespace Product_With_Images_Task.Controllers
         }
     }
 }
+
+
